@@ -1,5 +1,3 @@
-#!/usr/bin/env python 
-# -*- coding:utf-8 -*-
 from glob import glob
 import os
 
@@ -32,10 +30,9 @@ class train_config():
         # train config
         self.retrain = False
         self.retrain_epoch = 0
-        self.retrain_path = "./weights/TFUnet/ped2/gauss0.0_ped2_l2grad_dp6dim256mlpd128h4ps14_96.8.pth"
-        self.flownet = "lite1"  # flowsd2
-        self.epochs = 15
-        self.batchsize = 14
+        self.retrain_path = ""
+        self.epochs = 60
+        self.batchsize = 8
         self.clip = 16
         self.short_len = 2
         self.save_epochs = 1
@@ -43,19 +40,12 @@ class train_config():
         self.eval_step = 1000
         self.stop_step = 30000
         self.g_learn_rate = 0.0002
-        self.d_learn_rate = 0.00002
 
         # loss
-        self.loss = ['l2', 'grad']  # "l2+grad"
+        self.loss = ['l2', 'grad'] 
         self.eval_score = "psnr"
 
-        """"
-        param: 
-        1：ms_att                   2：early_ms_cbam_shared            3：early_ms_cbam_noshared   
-        4：later_ms_cbam_conv_att   5：med_ms_cbam_noshared_conv_att   6：med_ms_cbam_shared_conv_att
-        7：later_ms_cbam_att_conv   8：med_ms_cbam_noshared_att_conv   9：med_ms_cbam_shared_att_conv 
-        """
-        self.mod = 'later_mp2_selfatt_conv_att'  # 5
+        self.mod = ''
 
     def print_cfg(self):
         print(f'Dataset:{self.dataset}')
@@ -85,6 +75,6 @@ class test_config():
         elif dataset == "shanghaitech":
             self.test_dataset_path = self.dataset_root + dataset + "/testing/frames/"
         self.test_mat = self.dataset_root + dataset + "/"
-        self.mod = 'later_nmp_cbam_conv_att'
-        self.batchsize = 14
+        self.mod = ''
+        self.batchsize = 8
         self.clip = 16
