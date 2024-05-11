@@ -151,7 +151,7 @@ class Label_loader:
         return all_gt
 
     def load_shanghaitech(self):
-        np_list = glob.glob(f'E:/Datasets/shanghaitech/testing/test_frame_mask/*.npy')
+        np_list = glob.glob('')
         np_list.sort()
 
         gt = []
