@@ -2,7 +2,7 @@
 
 Model trained on UCSD Ped2, CUHK Avenue and ShanghaiTech
 
-| **Datasets** | *download* | *AUC* |
+| **Datasets** | **Download** | **AUC** |
 |----------|-------|-------|
 | UCSD Ped2 | (http://www.svcl.ucsd.edu/projects/anomaly/) | *98.3%* |
 | CUHK Avenue | (http://www.cse.cuhk.edu.hk/leojia/projects/detectabnormal/dataset.html) | *88.2%* |
