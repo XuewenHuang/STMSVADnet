@@ -6,10 +6,7 @@ import torch
 from tensorboardX import SummaryWriter
 from torch.utils.data import DataLoader
 
-from models.Unet.SelectAttentionUnet import *
-from models.pix2pix_networks import PixelDiscriminator
-from models.liteFlownet import lite_flownet as lite_flow
-from models.flownet2.models import FlowNet2SD
+from models.SelectAttentionUnet import *
 
 from evaluate import val_training
 from utils.utils import *
