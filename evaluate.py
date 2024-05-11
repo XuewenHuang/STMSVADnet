@@ -4,8 +4,8 @@ import torch
 from sklearn import metrics
 from torch.utils.data import DataLoader
 
-from models.Unet.SelectAttentionUnet import Later_SelectAttention_Net, Med_MS_Attention_Net, \
-    Early_SelectAttention_Shared_Net, Early_SelectAttention_NoShared_Net, MS_Attention_Net
+from models.SelectAttentionUnet import Later_SelectAttention_Net, Med_MS_Attention_Net, \
+    Early_SelectAttention_Shared_Net, Early_SelectAttention_NoShared_Net
 from utils.config_Train import test_config
 from utils.Dataset import save_npy_files
 from utils.utils import multi_patch_max_mse, psnr_v, multi_future_frames_to_scores
