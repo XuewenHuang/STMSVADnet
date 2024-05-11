@@ -95,21 +95,6 @@ def train(train_cfg, test_cfg):
                 G_frame1 = G_split[0]
                 G_frame2 = G_split[1]
 
-                # 计算光流
-                if use_flow:
-                    if train_cfg.flownet == 'lite1':
-                        bound_flow_input1 = torch.cat([G_frame2, target_frame1], 1)  # t-1时刻真实的和t真实的计算光流     输入    1横着拼
-                        bound_flow_input2 = torch.cat([target_frame2, G_frame1], 1)  # t-1时刻真实的和预测的计算光流     输入
-                        # No need to train flow_net, use .detach() to cut off gradients.
-                        flow_bound1 = flow_net.batch_estimate(bound_flow_input1, flow_net).detach()  # 光流网络计算光流    真实
-                        flow_bound2 = flow_net.batch_estimate(bound_flow_input2, flow_net).detach()  # 光流网络计算光流    预测
-                    elif train_cfg.flownet == '2sd':
-                        bound_flow_input1 = torch.cat([G_frame2.unsqueeze(2), target_frame1.unsqueeze(2)], 2)
-                        bound_flow_input2 = torch.cat([target_frame2.unsqueeze(2), G_frame1.unsqueeze(2)], 2)
-                        flow_bound1 = (flow_net(
-                            bound_flow_input1 * 255.) / 255.).detach()  # Input for flownet2sd is in (0, 255).
-                        flow_bound2 = (flow_net(bound_flow_input2 * 255.) / 255.).detach()
-
                 if 'l2' in train_cfg.loss:
                     inte_l1 = torch.mean(intensity_loss(G_frame1, target_frame1))
                     inte_l2 = torch.mean(intensity_loss(G_frame2, target_frame2))
