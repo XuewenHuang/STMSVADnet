@@ -3,14 +3,6 @@ import torch.nn as nn
 import numpy as np
 
 
-class Flow_Loss(nn.Module):
-    def __init__(self):
-        super().__init__()
-
-    def forward(self, gen_flows, gt_flows):
-        return torch.mean(torch.abs(gen_flows - gt_flows))
-
-
 class Intensity_Loss(nn.Module):
     def __init__(self):
         super().__init__()
@@ -45,13 +37,5 @@ class Gradient_Loss(nn.Module):
 
         return torch.mean(grad_diff_x + grad_diff_y)
 
-
-class Adversarial_Loss(nn.Module):
-    def __init__(self):
-        super().__init__()
-
-    def forward(self, fake_outputs):
-        # TODO: compare with torch.nn.MSELoss ?
-        return torch.mean((fake_outputs - 1) ** 2 / 2)
 
 
