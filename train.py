@@ -63,23 +63,6 @@ def train(train_cfg, test_cfg):
     generator.apply(weights_init_normal)
     print('Generator are going to be trained from scratch.')
 
-    # 选择光流网络
-    use_flow = False
-    if 'flow' in train_cfg.loss:
-        use_flow = True
-        assert train_cfg.flownet in ('lite1', '2sd'), 'Flow net only supports LiteFlownet or FlowNet2SD currently.'
-        if train_cfg.flownet == '2sd':
-            flow_net = FlowNet2SD()
-            flow_net.load_state_dict(torch.load('models/flownet2/FlowNet2-SD.pth')['state_dict'])
-        else:
-            flow_net = lite_flow.Network()
-            flow_net.load_state_dict(torch.load('models/liteFlownet/network-default.pytorch'))
-
-        # 光流网络不做训练，迁移学习
-        flow_net.cuda().eval()  # Use flow_net to generate optic flows, so set to eval mode.
-        flow_loss = Flow_Loss().cuda()  # 光流损失
-        print("FlowNet load finished")
-
     if 'grad' in train_cfg.loss:
         gradient_loss = Gradient_Loss(3).cuda()  # 梯度损失
     if 'l2' in train_cfg.loss:
@@ -135,8 +118,6 @@ def train(train_cfg, test_cfg):
                     grad_l1 = gradient_loss(G_frame1, target_frame1)
                     grad_l2 = gradient_loss(G_frame2, target_frame2)
                     grad_l = 0.8 * grad_l1 + 0.2 * grad_l2  # 梯度损失
-                if use_flow:
-                    fl_l = flow_loss(flow_bound1, flow_bound2)  # 光流损失
 
                 G_l_t = 1. * inte_l + 1. * grad_l
                 if use_flow:
@@ -158,16 +139,11 @@ def train(train_cfg, test_cfg):
 
                 loop.set_description(f'Epoch[{epoch}/{train_cfg.epochs}]')
 
-                if use_flow:
-                    loop.set_postfix(
-                        info=f'step:{step} | psnr:{psnr1:.3f},{psnr2:.3f} G:{G_l_t:.3f} | inte:{inte_l1:.3f},{inte_l2:.3f} | grad:{grad_l1:.3f},{grad_l2:.3f} | fl_l:{fl_l:.3f} ')
-                else:
-                    loop.set_postfix(
-                        info=f'step:{step} | psnr:{psnr1:.3f},{psnr2:.3f} G:{G_l_t:.3f} | inte:{inte_l1:.3f},{inte_l2:.3f} | grad:{grad_l1:.3f},{grad_l2:.3f} ')
+
+                loop.set_postfix(
+                    info=f'step:{step} | psnr:{psnr1:.3f},{psnr2:.3f} G:{G_l_t:.3f} | inte:{inte_l1:.3f},{inte_l2:.3f} | grad:{grad_l1:.3f},{grad_l2:.3f} ')
 
                 writer.add_scalar('total_loss/g_loss_total', G_l_t, global_step=step)  # 总损失
-                if use_flow:
-                    writer.add_scalar('G_loss_total/fl_loss', fl_l, global_step=step)  # 光流损失
                 if 'l2' in train_cfg.loss:
                     writer.add_scalar('G_loss_total/inte_loss', inte_l, global_step=step)  # 烈度损失
                     writer.add_scalar('G_loss_total/inte_loss1', inte_l1, global_step=step)
@@ -222,7 +198,7 @@ def train(train_cfg, test_cfg):
 
 if __name__ == "__main__":
     short_len = [2, 4, 8, 12, 16]
-    ext_mod = ['later_nmp_cbam_conv_att', 'later_nmp_eca_conv_att']
+    ext_mod = ['', '']
 
     train_cfg = config.train_config()
     test_cfg = config.test_config()
